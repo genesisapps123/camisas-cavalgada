@@ -10,7 +10,8 @@
 
 body{
     margin:0;
-    font-family:Arial;
+    padding:0;
+    font-family:Arial, sans-serif;
     background:#f5f5f5;
 }
 
@@ -27,6 +28,7 @@ body{
 h1{
     text-align:center;
     color:#c40000;
+    margin-bottom:25px;
 }
 
 input, select{
@@ -37,6 +39,13 @@ input, select{
     border:2px solid #ddd;
     font-size:16px;
     box-sizing:border-box;
+    outline:none;
+    transition:0.2s;
+}
+
+input:focus,
+select:focus{
+    border-color:#c40000;
 }
 
 .erro{
@@ -59,11 +68,18 @@ button{
     background:#c40000;
     color:white;
     font-size:18px;
+    font-weight:bold;
     cursor:pointer;
+    transition:0.2s;
 }
 
 button:hover{
     opacity:0.9;
+}
+
+button:disabled{
+    opacity:0.6;
+    cursor:not-allowed;
 }
 
 #sucesso{
@@ -71,6 +87,14 @@ button:hover{
     color:green;
     margin-top:15px;
     display:none;
+    font-weight:bold;
+}
+
+#loading{
+    text-align:center;
+    margin-top:15px;
+    display:none;
+    color:#c40000;
 }
 
 </style>
@@ -82,24 +106,40 @@ button:hover{
 <h1>Cadastro Evento</h1>
 
 <input type="text" id="nome" placeholder="Seu nome">
-<div class="mensagemErro" id="erroNome">Preencha seu nome</div>
+<div class="mensagemErro" id="erroNome">
+Preencha seu nome
+</div>
 
 <input type="text" id="equipe" placeholder="Equipe">
-<div class="mensagemErro" id="erroEquipe">Preencha sua equipe</div>
+<div class="mensagemErro" id="erroEquipe">
+Preencha sua equipe
+</div>
 
 <select id="camisa">
-<option value="">Tamanho da camisa</option>
-<option>P</option>
-<option>M</option>
-<option>G</option>
-<option>GG</option>
+    <option value="">Tamanho da camisa</option>
+    <option value="P">P</option>
+    <option value="M">M</option>
+    <option value="G">G</option>
+    <option value="GG">GG</option>
 </select>
-<div class="mensagemErro" id="erroCamisa">Escolha o tamanho</div>
 
-<input type="tel" id="telefone" placeholder="Telefone">
-<div class="mensagemErro" id="erroTelefone">Preencha o telefone</div>
+<div class="mensagemErro" id="erroCamisa">
+Escolha o tamanho da camisa
+</div>
 
-<button onclick="cadastrar()">Cadastrar</button>
+<input type="tel" id="telefone" placeholder="Telefone para contato">
+
+<div class="mensagemErro" id="erroTelefone">
+Preencha o telefone
+</div>
+
+<button id="btnCadastrar" onclick="cadastrar()">
+Cadastrar
+</button>
+
+<div id="loading">
+Enviando cadastro...
+</div>
 
 <div id="sucesso">
 Cadastro realizado com sucesso!
@@ -109,12 +149,13 @@ Cadastro realizado com sucesso!
 
 <script>
 
+/* COLE AQUI SUA URL /exec */
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzLnzulBgjrd31TJabVC7_oQrJvZueL-isFgwSUp7y6ui7YDpmJEko-mogBF61O3N7j/exec";
 
 function vibrar(){
-   if(navigator.vibrate){
-      navigator.vibrate(200);
-   }
+    if(navigator.vibrate){
+        navigator.vibrate(200);
+    }
 }
 
 function mostrarErro(campo, erro){
@@ -128,14 +169,27 @@ function removerErro(campo, erro){
     erro.style.display = "none";
 }
 
-function cadastrar(){
+async function cadastrar(){
 
     const nome = document.getElementById("nome");
-const equipe = document.getElementById("equipe");
-const camisa = document.getElementById("camisa");
-const telefone = document.getElementById("telefone");
+    const equipe = document.getElementById("equipe");
+    const camisa = document.getElementById("camisa");
+    const telefone = document.getElementById("telefone");
+
+    const erroNome = document.getElementById("erroNome");
+    const erroEquipe = document.getElementById("erroEquipe");
+    const erroCamisa = document.getElementById("erroCamisa");
+    const erroTelefone = document.getElementById("erroTelefone");
+
+    const sucesso = document.getElementById("sucesso");
+    const loading = document.getElementById("loading");
+    const botao = document.getElementById("btnCadastrar");
+
+    sucesso.style.display = "none";
 
     let valido = true;
+
+    /* VALIDAÇÕES */
 
     if(nome.value.trim() === ""){
         mostrarErro(nome, erroNome);
@@ -169,31 +223,63 @@ const telefone = document.getElementById("telefone");
         return;
     }
 
-    fetch(URL_SCRIPT,{
-        method:"POST",
-        body:JSON.stringify({
-            nome:nome.value,
-            equipe:equipe.value,
-            camisa:camisa.value,
-            telefone:telefone.value
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
+    /* LOADING */
 
-        document.getElementById("sucesso").style.display = "block";
+    loading.style.display = "block";
+    botao.disabled = true;
 
-        nome.value = "";
-        equipe.value = "";
-        camisa.value = "";
-        telefone.value = "";
+    try{
 
-    })
-    .catch(err => {
+        const resposta = await fetch(URL_SCRIPT,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                nome:nome.value,
+                equipe:equipe.value,
+                camisa:camisa.value,
+                telefone:telefone.value
+            })
+        });
+
+        const data = await resposta.json();
+
+        loading.style.display = "none";
+        botao.disabled = false;
+
+        if(data.result === "success"){
+
+            sucesso.style.display = "block";
+
+            nome.value = "";
+            equipe.value = "";
+            camisa.value = "";
+            telefone.value = "";
+
+        }else{
+
+            alert("Erro: " + data.message);
+
+        }
+
+    }catch(error){
+
+        loading.style.display = "none";
+        botao.disabled = false;
+
         alert("Erro ao cadastrar");
-    });
+
+        console.log(error);
+
+    }
 
 }
+
+</script>
+
+</body>
+</html>
 
 </script>
 
