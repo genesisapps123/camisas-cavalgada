@@ -1,3 +1,4 @@
+```html id="md4ig5"
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -106,11 +107,13 @@ button:disabled{
 <h1>Cadastro Evento</h1>
 
 <input type="text" id="nome" placeholder="Seu nome">
+
 <div class="mensagemErro" id="erroNome">
 Preencha seu nome
 </div>
 
 <input type="text" id="equipe" placeholder="Equipe">
+
 <div class="mensagemErro" id="erroEquipe">
 Preencha sua equipe
 </div>
@@ -149,7 +152,7 @@ Cadastro realizado com sucesso!
 
 <script>
 
-/* COLE AQUI SUA URL /exec */
+/* COLE SUA URL /exec AQUI */
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzLnzulBgjrd31TJabVC7_oQrJvZueL-isFgwSUp7y6ui7YDpmJEko-mogBF61O3N7j/exec";
 
 function vibrar(){
@@ -230,8 +233,9 @@ async function cadastrar(){
 
     try{
 
-        const resposta = await fetch(URL_SCRIPT,{
+        await fetch(URL_SCRIPT,{
             method:"POST",
+            mode:"no-cors",
             headers:{
                 "Content-Type":"application/json"
             },
@@ -243,25 +247,15 @@ async function cadastrar(){
             })
         });
 
-        const data = await resposta.json();
-
         loading.style.display = "none";
         botao.disabled = false;
 
-        if(data.result === "success"){
+        sucesso.style.display = "block";
 
-            sucesso.style.display = "block";
-
-            nome.value = "";
-            equipe.value = "";
-            camisa.value = "";
-            telefone.value = "";
-
-        }else{
-
-            alert("Erro: " + data.message);
-
-        }
+        nome.value = "";
+        equipe.value = "";
+        camisa.value = "";
+        telefone.value = "";
 
     }catch(error){
 
@@ -280,6 +274,8 @@ async function cadastrar(){
 
 </body>
 </html>
+```
+
 
 </script>
 
