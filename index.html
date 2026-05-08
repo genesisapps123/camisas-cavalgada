@@ -1,101 +1,159 @@
-```html id="md4ig5"
+```html id="aj6x7m"
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Cadastro Evento</title>
+<title>Cadastro Evento - XIX Cavalgada</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-body{
+*{
     margin:0;
     padding:0;
-    font-family:Arial, sans-serif;
-    background:#f5f5f5;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Poppins', sans-serif;
+    background:
+    linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)),
+    url('https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1200&auto=format&fit=crop');
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
 }
 
 .container{
-    width:90%;
-    max-width:400px;
-    background:white;
-    margin:40px auto;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 5px 20px rgba(0,0,0,0.1);
+    width:100%;
+    max-width:430px;
+    background:#111827;
+    border:3px solid #f59b52;
+    border-radius:25px;
+    padding:30px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.5);
 }
 
-h1{
+.logo{
+    width:100%;
+    max-width:280px;
+    display:block;
+    margin:0 auto 20px auto;
+}
+
+.titulo{
     text-align:center;
-    color:#c40000;
+    color:#ffffff;
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+.subtitulo{
+    text-align:center;
+    color:#f59b52;
+    font-size:15px;
     margin-bottom:25px;
 }
 
-input, select{
+input,
+select{
     width:100%;
-    padding:15px;
-    margin-top:10px;
-    border-radius:10px;
-    border:2px solid #ddd;
+    padding:16px;
+    margin-top:12px;
+    border-radius:14px;
+    border:2px solid #2d3748;
+    background:#1f2937;
+    color:#fff;
     font-size:16px;
-    box-sizing:border-box;
     outline:none;
     transition:0.2s;
 }
 
+input::placeholder{
+    color:#cbd5e0;
+}
+
+select{
+    color:#fff;
+}
+
+select option{
+    background:#111827;
+}
+
 input:focus,
 select:focus{
-    border-color:#c40000;
+    border-color:#f59b52;
+    box-shadow:0 0 10px rgba(245,155,82,0.4);
 }
 
 .erro{
-    border:2px solid red !important;
+    border:2px solid #ff3b30 !important;
 }
 
 .mensagemErro{
-    color:red;
-    font-size:14px;
+    color:#ff6b6b;
+    font-size:13px;
     margin-top:5px;
     display:none;
+    padding-left:5px;
 }
 
 button{
     width:100%;
-    padding:15px;
-    margin-top:20px;
+    padding:17px;
+    margin-top:25px;
     border:none;
-    border-radius:10px;
-    background:#c40000;
-    color:white;
+    border-radius:14px;
+    background:#f59b52;
+    color:#111827;
     font-size:18px;
-    font-weight:bold;
+    font-weight:700;
     cursor:pointer;
     transition:0.2s;
 }
 
 button:hover{
-    opacity:0.9;
+    transform:scale(1.02);
+    opacity:0.95;
 }
 
 button:disabled{
-    opacity:0.6;
+    opacity:0.7;
     cursor:not-allowed;
-}
-
-#sucesso{
-    text-align:center;
-    color:green;
-    margin-top:15px;
-    display:none;
-    font-weight:bold;
 }
 
 #loading{
     text-align:center;
-    margin-top:15px;
+    margin-top:18px;
+    color:#f59b52;
     display:none;
-    color:#c40000;
+    font-weight:500;
+}
+
+#sucesso{
+    text-align:center;
+    margin-top:18px;
+    color:#4ade80;
+    display:none;
+    font-weight:600;
+    font-size:15px;
+}
+
+.rodape{
+    text-align:center;
+    margin-top:25px;
+    color:#9ca3af;
+    font-size:13px;
 }
 
 </style>
@@ -104,9 +162,18 @@ button:disabled{
 
 <div class="container">
 
-<h1>Cadastro Evento</h1>
+<!-- COLOQUE SUA LOGO NO GITHUB E TROQUE O CAMINHO ABAIXO -->
+<img src="logo.png" class="logo">
 
-<input type="text" id="nome" placeholder="Seu nome">
+<div class="titulo">
+XIX Cavalgada
+</div>
+
+<div class="subtitulo">
+Várzea Alegre • Cadastro Oficial
+</div>
+
+<input type="text" id="nome" placeholder="Nome completo">
 
 <div class="mensagemErro" id="erroNome">
 Preencha seu nome
@@ -137,7 +204,7 @@ Preencha o telefone
 </div>
 
 <button id="btnCadastrar" onclick="cadastrar()">
-Cadastrar
+REALIZAR CADASTRO
 </button>
 
 <div id="loading">
@@ -148,11 +215,14 @@ Enviando cadastro...
 Cadastro realizado com sucesso!
 </div>
 
+<div class="rodape">
+XIX Cavalgada de Várzea Alegre
+</div>
+
 </div>
 
 <script>
 
-/* COLE SUA URL /exec AQUI */
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzLnzulBgjrd31TJabVC7_oQrJvZueL-isFgwSUp7y6ui7YDpmJEko-mogBF61O3N7j/exec";
 
 function vibrar(){
@@ -192,8 +262,6 @@ async function cadastrar(){
 
     let valido = true;
 
-    /* VALIDAÇÕES */
-
     if(nome.value.trim() === ""){
         mostrarErro(nome, erroNome);
         valido = false;
@@ -225,8 +293,6 @@ async function cadastrar(){
     if(!valido){
         return;
     }
-
-    /* LOADING */
 
     loading.style.display = "block";
     botao.disabled = true;
@@ -275,6 +341,7 @@ async function cadastrar(){
 </body>
 </html>
 ```
+
 
 
 </script>
